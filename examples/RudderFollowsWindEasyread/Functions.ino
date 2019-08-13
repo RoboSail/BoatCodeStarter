@@ -1,41 +1,43 @@
+#include <RoboSail_Hardware.h>
+
 /*********Functions for Setup ************/
 void declarePins()
 {
-  pinMode(RUDDER_RC_PIN, INPUT);
-  pinMode(SAIL_RC_PIN, INPUT);
-  pinMode(WIND_PIN, INPUT);
+  pinMode(ROBOSAIL_PIN_RUDDER_RC, INPUT);
+  pinMode(ROBOSAIL_PIN_SAIL_RC, INPUT);
+  pinMode(ROBOSAIL_PIN_WIND, INPUT);
 
   // attach the servos to the proper pins
-  rudderServo.attach(RUDDER_SERVO_PIN);
-  sailServo.attach(SAIL_SERVO_PIN);
+  rudderServo.attach(ROBOSAIL_PIN_RUDDER_SERVO);
+  sailServo.attach(ROBOSAIL_PIN_SAIL_SERVO);
 }
 
 
 /*********Functions to read RC Transmitter/Receiver and Sensors *****/
  // Takes in the PWM signals from the RC Receiver and translate
  // them to the servo positions in degrees.
- // Takes in the PWM signals from the WindSensor and translate 
+ // Takes in the PWM signals from the WindSensor and translate
  // it to the windvane position in degrees.
  void readReceiverSensors()
  {
   // Read the command pulse from the RC receiver
-  rudderPulseWidth = pulseIn(RUDDER_RC_PIN, HIGH);
-  sailPulseWidth = pulseIn(SAIL_RC_PIN, HIGH);
+  rudderPulseWidth = pulseIn(ROBOSAIL_PIN_RUDDER_RC, HIGH);
+  sailPulseWidth = pulseIn(ROBOSAIL_PIN_SAIL_RC, HIGH);
   // Calculate the servo position in degrees.
-  rudderPosition = map(rudderPulseWidth, RUDDER_LOW, RUDDER_HIGH, -60, 60);
-  sailPosition = map(sailPulseWidth, SAIL_LOW, SAIL_HIGH, 0, 90);
-  
+  rudderPosition = map(rudderPulseWidth, ROBOSAIL_RUDDER_LOW, ROBOSAIL_RUDDER_HIGH, -60, 60);
+  sailPosition = map(sailPulseWidth, ROBOSAIL_SAIL_LOW, ROBOSAIL_SAIL_HIGH, 0, 90);
+
   // Read values from the WindSensor
-  windPulseWidth = pulseIn(WIND_PIN, HIGH);
+  windPulseWidth = pulseIn(ROBOSAIL_PIN_WIND, HIGH);
   // Convert the wind angle to degrees from PWM.  Range -180 to +180
-  windAngle = map(windPulseWidth, 0, WIND_HIGH, 180, -180);
+  windAngle = map(windPulseWidth, ROBOSAIL_WIND_LOW, ROBOSAIL_RUDDER_HIGH, 180, -180);
   windAngle = constrain(windAngle, -180, 180);
  }
 
 /************Functions to drive Sail and Rudder servos ****************/
- // This code takes in the desired postions for the servos in degrees (as 
- // defined in RoboSail) then calculates appropriate values for the servo commands, 
- // making sure not to send the servos to impossible positions, which could 
+ // This code takes in the desired postions for the servos in degrees (as
+ // defined in RoboSail) then calculates appropriate values for the servo commands,
+ // making sure not to send the servos to impossible positions, which could
  // damage the servo motors.
  // The Rudder servo motor ranges from 0 to 180 with 90 deg in the center
  // The Sailwinch servo is at ~55 deg when full-in, which we think of as 0 deg,
@@ -48,7 +50,7 @@ void driveSailServo(int sailPos)
     sailServoOut = map(sailPos, 0, 90, 55, 125);
     sailServo.write(sailServoOut);
   }
-  else 
+  else
   {
     Serial.print("ERROR - sail position out of range: ");
     Serial.println(sailPos);
@@ -62,7 +64,7 @@ void driveRudderServo(int rudderPos)
     rudderServoOut = map(rudderPos, -90, 90, 0, 180);
     rudderServo.write(rudderServoOut);
   }
-  else 
+  else
     {
     Serial.print("ERROR - rudder position out of range: ");
     Serial.println(rudderPos);
@@ -74,7 +76,7 @@ void printToMonitor()
 {
   Serial.print("Wind Angle: ");
   Serial.print(windAngle);
- 
+
   Serial.print("  Rudder, RC: ");
   Serial.print(rudderPulseWidth);
    Serial.print("  desired angle: ");
