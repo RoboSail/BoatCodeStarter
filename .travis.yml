@@ -1,0 +1,14 @@
+sudo: false
+language: ruby
+
+# Blacklist
+branches:
+  except:
+    - gh-pages
+
+script:
+  # we need to install arduino, then manually install the hardware library dependency
+  - bundle install
+  - mkdir -p /home/travis/Arduino/libraries
+  - pushd /home/travis/Arduino/libraries && git clone https://github.com/RoboSail/RoboSail_Hardware_Tests.git && popd
+  - bundle exec arduino_ci_remote.rb --skip-unittests

@@ -11,16 +11,10 @@ variable "verbose" is set to true.  otherwise set verbose to false.
 */
 
 #include <Servo.h>
+#include <RoboSail_Hardware.h>
+
 boolean verbose = true;  //true calls function for values to be printed to monitor
 
-// Pin assignments
-const int ROBOSAIL_PIN_WIND = 7;
-//input pins from receiver
-const int ROBOSAIL_PIN_RUDDER_RC = 2;
-const int ROBOSAIL_PIN_SAIL_RC = 3;
-// Output pins to the servos
-const int ROBOSAIL_PIN_RUDDER_SERVO = 8;
-const int ROBOSAIL_PIN_SAIL_SERVO = 9;
 // variables to hold input and output values
 int rudderPulseWidth;
 int rudderServoOut;
@@ -57,13 +51,13 @@ void loop() {
   rudderPulseWidth = pulseIn(ROBOSAIL_PIN_RUDDER_RC, HIGH, 25000);
   sailPulseWidth = pulseIn(ROBOSAIL_PIN_SAIL_RC, HIGH, 25000);
   // Calculate the servo position in degrees.
-  rudderServoOut = map(rudderPulseWidth, 1000, 2000, -75, 75);
-  sailServoOut = map(sailPulseWidth, 1090, 1900, 0, 90);
+  rudderServoOut = map(rudderPulseWidth, ROBOSAIL_RUDDER_LOW, ROBOSAIL_RUDDER_HIGH, -75, 75);
+  sailServoOut = map(sailPulseWidth, ROBOSAIL_SAIL_LOW, ROBOSAIL_SAIL_HIGH, 0, 90);
 
   // Read values from the WindSensor
   windPulseWidth = pulseIn(ROBOSAIL_PIN_WIND, HIGH, 25000);
   // Convert the wind angle to degrees from PWM.  Range -180 to +180
-  windAngle = map(windPulseWidth, 0, 1024, 180, -180);
+  windAngle = map(windPulseWidth, ROBOSAIL_WIND_LOW, ROBOSAIL_WIND_HIGH, 180, -180);
   windAngle = constrain(windAngle, -180, 180);
   bool Auto = false;
   //**************** your code here ******************
@@ -91,20 +85,20 @@ Serial.println(Auto);
          Serial.println ("Left Turn Command");
          if (desiredAngle > 180) {
           desiredAngle = desiredAngle - 360;
-         } 
+         }
          waitingForZero = 1;
       }
-      
+
       // Detect Right Turn and calculate new desired angle
       if (rudderPulseWidth < 1250) {
          desiredAngle = desiredAngle - courseChange;
          Serial.println ("Right Turn Command");
          if (desiredAngle < -180) {
           desiredAngle = desiredAngle + 360;
-         } 
+         }
          waitingForZero = 1;
-      } 
-    }  
+      }
+    }
       // Change Rudder As needed
       rudderServoOut = desiredAngle - windAngle;
       if (rudderServoOut > 180)
@@ -112,22 +106,22 @@ Serial.println(Auto);
       if (rudderServoOut < -180)
       {rudderServoOut += 360;}
       rudderServoOut /= 2.5;    //Makes less sensitive
-      
+
       rudderServoOut = constrain(rudderServoOut,-60,60);
       rudderServoOut = map(rudderServoOut, -90, 90, 0, 180);
       rudderServo.write(rudderServoOut);
- 
+
   /* Debug Notes:
      + Need to handle case when desired wind angle is near 180.  This does not work
      properly.
-     + Need to reverse sign on left vs right turn.  i.e., left push should mean 
+     + Need to reverse sign on left vs right turn.  i.e., left push should mean
      turn boat towards the left.
-     * Need to make rudder less sensitive - slower to react. 
-     
+     * Need to make rudder less sensitive - slower to react.
+
      */
 
-          
-          
+
+
   }
   else //Manual control
   {
@@ -137,7 +131,7 @@ Serial.println(Auto);
     desiredAngle /= courseChange;
     desiredAngle *= courseChange;
   }
-  
+
   // Always automatically trim the sail
     windAngle = abs(windAngle);
 

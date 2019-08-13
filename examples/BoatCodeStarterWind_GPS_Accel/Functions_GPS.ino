@@ -1,3 +1,5 @@
+#include <RoboSail_Hardware.h>
+#include <UsefulCalcs.h>
 
 // Interrupt is called once a millisecond, looks for any new GPS data, and stores it
 SIGNAL(TIMER0_COMPA_vect) {
@@ -16,7 +18,7 @@ if (GPS.newNMEAreceived())
   {
     char* LastNMEA; // declare pointer to GPS data
     LastNMEA = GPS.lastNMEA(); // read the string and set the newNMEAreceived() flag to false
-    if (!GPS.parse(LastNMEA)) 
+    if (!GPS.parse(LastNMEA))
     {
       return; // failed to parse a sentence (was likely incomplete) so just wait for another
     }
@@ -29,8 +31,8 @@ if (GPS.newNMEAreceived())
       if (start_pos_found)
       {
         // take in lat/lon degree values and return (x,y) in meters in XYpos array
-        calc.latLonToUTM(GPS.latitudeDegrees, GPS.longitudeDegrees, XYpos);
-        
+        latLonToUTM(GPS.latitudeDegrees, GPS.longitudeDegrees, XYpos);
+
         // calculate the boat position relative to where it was started
         relPositionX = XYpos[0] - startPositionX;
         relPositionY = XYpos[1] - startPositionY;
@@ -40,17 +42,17 @@ if (GPS.newNMEAreceived())
 
       }
       else // starting position not yet found but there is a fix
-      { 
+      {
         // take in lat/lon degree values and return (x,y) in meters in pos array
-        calc.latLonToUTM(GPS.latitudeDegrees, GPS.longitudeDegrees, XYpos);
+        latLonToUTM(GPS.latitudeDegrees, GPS.longitudeDegrees, XYpos);
         startPositionX = XYpos[0];
         startPositionY = XYpos[1];
-        
+
         Serial.println("Starting position found!");
         Serial.print("x = "); Serial.print(startPositionX);
         Serial.print("   y = "); Serial.println(startPositionY);
         Serial.println();
-        
+
         start_pos_found = true;
       }
     }

@@ -11,16 +11,10 @@ variable "verbose" is set to true.  otherwise set verbose to false.
 */
 
 #include <Servo.h>
+#include <RoboSail_Hardware.h>
+
 boolean verbose = true;  //true calls function for values to be printed to monitor
 
-// Pin assignments
-const int ROBOSAIL_PIN_WIND = 7;
-//input pins from receiver
-const int ROBOSAIL_PIN_RUDDER_RC = 2;
-const int ROBOSAIL_PIN_SAIL_RC = 3;
-// Output pins to the servos
-const int ROBOSAIL_PIN_RUDDER_SERVO = 8;
-const int ROBOSAIL_PIN_SAIL_SERVO = 9;
 // variables to hold input and output values
 int rudderPulseWidth;
 int rudderServoOut;
@@ -59,13 +53,13 @@ void loop() {
   rudderPulseWidth = pulseIn(ROBOSAIL_PIN_RUDDER_RC, HIGH, 25000);
   sailPulseWidth = pulseIn(ROBOSAIL_PIN_SAIL_RC, HIGH, 25000);
   // Calculate the servo position in degrees.
-  rudderServoOut = map(rudderPulseWidth, 1000, 2000, -75, 75);
-  sailServoOut = map(sailPulseWidth, 1090, 1900, 0, 90);
+  rudderServoOut = map(rudderPulseWidth, ROBOSAIL_RUDDER_LOW, ROBOSAIL_RUDDER_HIGH, -75, 75);
+  sailServoOut = map(sailPulseWidth, ROBOSAIL_SAIL_LOW, ROBOSAIL_SAIL_HIGH, 0, 90);
 
   // Read values from the WindSensor
   windPulseWidth = pulseIn(ROBOSAIL_PIN_WIND, HIGH, 25000);
   // Convert the wind angle to degrees from PWM.  Range -180 to +180
-  windAngle = map(windPulseWidth, 0, 1024, 180, -180);
+  windAngle = map(windPulseWidth, ROBOSAIL_WIND_LOW, ROBOSAIL_WIND_HIGH, 180, -180);
   windAngle = constrain(windAngle, -180, 180);
 
   //**************** your code here ******************
@@ -93,38 +87,38 @@ void loop() {
   if (sailPulseWidth > 1840 || matchAngle == true) {
     rudderServoOut = desiredAngle - windAngle;
     if (rudderServoOut > 180) {
-     rudderServoOut -= 360; 
+     rudderServoOut -= 360;
     }
     if (rudderServoOut<-180) {
-     rudderServoOut += 360; 
+     rudderServoOut += 360;
     }
     if (rudderServoOut > 50) {
       rudderServoOut = 50;
     }
-    
+
     if (rudderServoOut < -50) {
-     rudderServoOut = -50; 
+     rudderServoOut = -50;
     }
 
   }
 
 
   //********Change desiredAngle*********
-  
-  
-  if (rudderPulseWidth < 1265 && prevRudderPosition > -1) 
+
+
+  if (rudderPulseWidth < 1265 && prevRudderPosition > -1)
   {
     desiredAngle -= 45;
     prevRudderPosition = -1;
   }
-  if (rudderPulseWidth > 1800 && prevRudderPosition < 1) 
+  if (rudderPulseWidth > 1800 && prevRudderPosition < 1)
   {
     desiredAngle += 45;
     prevRudderPosition = 1;
   }
   //prevRudderPulseWidth = rudderPulseWidth;
   if (rudderPulseWidth < 1600 && rudderPulseWidth > 1400) {
-   prevRudderPosition = 0; 
+   prevRudderPosition = 0;
   }
   if (desiredAngle > 180) {
     desiredAngle -= 360;
@@ -132,8 +126,8 @@ void loop() {
   if (desiredAngle <-180) {
     desiredAngle += 360;
   }
-  
-    
+
+
   if (verbose) {
     printToMonitor();
   }

@@ -1,27 +1,21 @@
 /* BoatCodewithSwitch
 7/24/2015
 © 2014-2015 RoboSail
-This program has 
+This program has
 automatic sail control at all times
 manual/automatic options for rudder using the Sail lever.
 In automatic mode is uses the Rudder lever to add or subtract to
 the desired windAngle
 
-Program values are displayed to the Serial Monitor when the 
+Program values are displayed to the Serial Monitor when the
 variable "verbose" is set to true.  otherwise set verbose to false.
 */
 
 #include <Servo.h>
+#include <RoboSail_Hardware.h>
+
 boolean verbose = true;  //true calls function for values to be printed to monitor
 
-// Pin assignments
-const int ROBOSAIL_PIN_WIND = 7; 
-//input pins from receiver
-const int ROBOSAIL_PIN_RUDDER_RC = 2;
-const int ROBOSAIL_PIN_SAIL_RC = 3;
-// Output pins to the servos
-const int ROBOSAIL_PIN_RUDDER_SERVO = 8;
-const int ROBOSAIL_PIN_SAIL_SERVO = 9;
 // variables to hold input and output values
 int rudderPulseWidth;
 int rudderServoOut;
@@ -60,20 +54,20 @@ void loop() {
   rudderPulseWidth = pulseIn(ROBOSAIL_PIN_RUDDER_RC, HIGH);
   sailPulseWidth = pulseIn(ROBOSAIL_PIN_SAIL_RC, HIGH);
   // Calculate the servo position in degrees.
-  rudderServoOut = map(rudderPulseWidth, 1000, 2000, -75, 75);
-  sailServoOut = map(sailPulseWidth, 1090, 1900, 0, 90);
-  
+  rudderServoOut = map(rudderPulseWidth, ROBOSAIL_RUDDER_LOW, ROBOSAIL_RUDDER_HIGH, -75, 75);
+  sailServoOut = map(sailPulseWidth, ROBOSAIL_SAIL_LOW, ROBOSAIL_SAIL_HIGH, 0, 90);
+
   // Read values from the WindSensor
   windPulseWidth = pulseIn(ROBOSAIL_PIN_WIND, HIGH);
   // Convert the wind angle to degrees from PWM.  Range -180 to +180
-  windAngle = map(windPulseWidth, 0, 1024, 180, -180);
+  windAngle = map(windPulseWidth, ROBOSAIL_WIND_LOW, ROBOSAIL_WIND_HIGH, 180, -180);
   windAngle = constrain(windAngle, -180, 180);
 
 //**************** your code here ******************
 // calculate values for rudderServoOut and sailServoOut in degrees.
   if (sailPulseWidth > 1800)
     {automatic = true; }
-   else 
+   else
     {automatic = false;}
   if (automatic)
   {
@@ -114,13 +108,13 @@ void loop() {
       if (desiredAngle < 180)
         {desiredAngle = desiredAngle + 360;}
     }
-  
-  
+
+
 
   if (verbose) {printToMonitor();}
-  
+
 //*************create output commands ***********************
-  // calculat appropriate values for the servos, then command the servos to move 
+  // calculat appropriate values for the servos, then command the servos to move
   // the Rudder servo motor ranges from 0 to 180 with 90 deg in the center
   // the Sailwinch servo is at ~55 deg when full-in, which we think of as 0 deg,
   //  and ~125 deg when full out, which we think of as 90 deg
@@ -128,7 +122,7 @@ void loop() {
   rudderServo.write(rudderServoOut);
   sailServoOut = map(sailServoOut, 0, 90, 55, 125);
   sailServo.write(sailServoOut);
-  
+
 } //end of loop()
 
 
@@ -137,7 +131,7 @@ void printToMonitor()
 {
   Serial.print("Wind Angle: ");
   Serial.print(windAngle);
- 
+
   Serial.print("  Rudder, from RC: ");
   Serial.print(rudderPulseWidth);
   Serial.print("  angle out: ");

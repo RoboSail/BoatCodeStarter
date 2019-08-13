@@ -1,3 +1,5 @@
+#include <RoboSail_Hardware.h>
+#include <UsefulCalcs.h>
 
 // Interrupt is called once a millisecond, looks for any new GPS data, and stores it
 SIGNAL(TIMER0_COMPA_vect) {
@@ -16,7 +18,7 @@ if (GPS.newNMEAreceived())
   {
     char* LastNMEA; // declare pointer to GPS data
     LastNMEA = GPS.lastNMEA(); // read the string and set the newNMEAreceived() flag to false
-    if (!GPS.parse(LastNMEA)) 
+    if (!GPS.parse(LastNMEA))
     {
       return; // failed to parse a sentence (was likely incomplete) so just wait for another
     }
@@ -29,8 +31,8 @@ if (GPS.newNMEAreceived())
       if (start_pos_found)
       {
         // take in lat/lon degree values and return (x,y) in meters in XYpos array
-        calc.latLonToUTM(GPS.latitudeDegrees, GPS.longitudeDegrees, XYpos);
-        
+        latLonToUTM(GPS.latitudeDegrees, GPS.longitudeDegrees, XYpos);
+
         // calculate the boat position relative to where it was started
         relPositionX = XYpos[0] - startPositionX;
         relPositionY = XYpos[1] - startPositionY;
@@ -40,17 +42,17 @@ if (GPS.newNMEAreceived())
 
       }
       else // starting position not yet found but there is a fix
-      { 
+      {
         // take in lat/lon degree values and return (x,y) in meters in pos array
-        calc.latLonToUTM(GPS.latitudeDegrees, GPS.longitudeDegrees, XYpos);
+        latLonToUTM(GPS.latitudeDegrees, GPS.longitudeDegrees, XYpos);
         startPositionX = XYpos[0];
         startPositionY = XYpos[1];
-        
+
         Serial.println("Starting position found!");
         Serial.print("x = "); Serial.print(startPositionX);
         Serial.print("   y = "); Serial.println(startPositionY);
         Serial.println();
-        
+
         start_pos_found = true;
       }
     }
@@ -73,40 +75,40 @@ void readCompassAccel()  //reads Compass to get heading and tilt
   ax = -accel_event.acceleration.x;
   ay = accel_event.acceleration.y;
   az = accel_event.acceleration.z;
-  
+
   /* Adjust for hard iron effects */
-  mx = mag_event.magnetic.x - hardiron_x;
-  my = mag_event.magnetic.y - hardiron_y;
-  mz = mag_event.magnetic.z - hardiron_z;
+  mx = mag_event.magnetic.x - ROBOSAIL_HARDIRON_X;
+  my = mag_event.magnetic.y - ROBOSAIL_HARDIRON_Y;
+  mz = mag_event.magnetic.z - ROBOSAIL_HARDIRON_Z;
 
   /* Invert Y and Z axis so that when X, Y, or Z is pointed towards Magnetic North they get a positive reading. */
   my = -my;
   mz = -mz;
-  
+
   roll = atan2(ay,az);
   pitch = atan(-ax/sqrt(pow(ay,2)+pow(az,2)));
-  
+
   my_adj = mz*sin(roll) - my*cos(roll);
   mx_adj = (mx*cos(pitch) + my*sin(pitch)*sin(roll) + mz*sin(pitch)*cos(roll));
-  
+
   yaw = atan2(my_adj,mx_adj);
-  
+
   roll = roll * 180/Pi;
   pitch =  pitch * 180/Pi;
   yaw = yaw * 180/Pi;
-  
-  heading = yaw + declination;
-  
+
+  heading = yaw + ROBOSAIL_DECLINATION;
+
   if (heading >= 360) {
     heading -= 360;
   } else if (heading < 0) {
     heading += 360;
   }
  //The heading is converted to a frame of reference for RoboSail:
- // East is 0 degrees, North is 90 deg, West is 180 deg, South is 270 deg. 
+ // East is 0 degrees, North is 90 deg, West is 180 deg, South is 270 deg.
   robosailHeading = (360 - heading) + 90;
   if (robosailHeading >= 360) {robosailHeading -= 360;}
-  
+
   //define roll for RoboSail as rolling to Port side is positive, rolling to Starboard is negative
-  robosailRoll  = -1 * roll; 
+  robosailRoll  = -1 * roll;
 }
