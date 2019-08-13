@@ -11,7 +11,7 @@ boolean displayValues = true;  //true calls function for values to be printed to
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h>
 #include <RoboSail_Hardware.h>
-#include "RoboSail.h"
+#include "Robosail.h"
 //Fill in min/max parameters for the RC Receiver and WindSensor in RoboSail.h tab
 
 Adafruit_GPS GPS(ROBOSAIL_SERIALPORT_GPS);
