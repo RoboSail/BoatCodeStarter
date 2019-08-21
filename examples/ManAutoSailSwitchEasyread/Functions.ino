@@ -31,7 +31,7 @@ void declarePins()
   // Read values from the WindSensor
   windPulseWidth = pulseIn(ROBOSAIL_PIN_WIND, HIGH);
   // Convert the wind angle to degrees from PWM.  Range -180 to +180
-  windAngle = map(windPulseWidth, ROBOSAIL_WIND_LOW, ROBOSAIL_RUDDER_HIGH, 180, -180);
+  windAngle = map(windPulseWidth, ROBOSAIL_WIND_LOW, ROBOSAIL_WIND_HIGH, 180, -180);
   windAngle = constrain(windAngle, -180, 180);
  }
 
@@ -94,4 +94,3 @@ void printToMonitor()
 
   Serial.print("\n"); // Print a new line
 }
-
