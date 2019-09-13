@@ -18,7 +18,7 @@ void setup() {
   Serial.println("\nRoboSail BoatCode using Wind and Accel - XXXXX");  //write program name here
   // Set RC receiver and WindSensor on digital input pins
   declarePins();
- 
+
 }
 
 void loop() {
@@ -27,22 +27,21 @@ readReceiver();
 readWind();
 readAccel();
 
-// You now have values from the RC Receiver and Sensors in these variable: 
+// You now have values from the RC Receiver and Sensors in these variable:
 // rudderPosition, sailPosition, and windAngle, pitch, roll, yaw as
 // defined in the RoboSail.h tab
-// Calculate new values for rudderPosition and sailPosition in degrees 
+// Calculate new values for rudderAngle and sailAngle in degrees
 // and set those variables to the new values.
 // If you do not set the values, it will use the values from the RC Receiver
 //**************** your code here - add lines as needed ******************
 
 
-  
+
+/********************* send commands to motors *************************/
 /********************* send commands to motors *************************/
   driveSailServo(sailPosition);
   driveRudderServo(rudderPosition);
-  
+
   if (displayValues) {printToMonitor();}
-  
+
 } //end of loop()
-
-

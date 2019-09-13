@@ -43,8 +43,12 @@ void checkCompass()
   rudderPulseWidth = pulseIn(ROBOSAIL_PIN_RUDDER_RC, HIGH);
   sailPulseWidth = pulseIn(ROBOSAIL_PIN_SAIL_RC, HIGH);
   // Calculate the servo position in degrees.
-  rudderPosition = map(rudderPulseWidth, ROBOSAIL_RUDDER_RC_LOW, ROBOSAIL_RUDDER_RC_HIGH, -60, 60);
-  sailPosition = map(sailPulseWidth, ROBOSAIL_SAIL_RC_LOW, ROBOSAIL_SAIL_RC_HIGH, 0, 90);
+  rudderPosition = map(rudderPulseWidth,
+                       ROBOSAIL_RUDDER_RC_LOW, ROBOSAIL_RUDDER_RC_HIGH,
+                       ROBOSAIL_RUDDER_ANGLE_LOW, ROBOSAIL_RUDDER_ANGLE_HIGH);
+  sailPosition = map(sailPulseWidth,
+                     ROBOSAIL_SAIL_RC_LOW, ROBOSAIL_SAIL_RC_HIGH,
+                     ROBOSAIL_SAIL_ANGLE_LOW, ROBOSAIL_SAIL_ANGLE_HIGH);
  }
 
  void readWind()
@@ -52,8 +56,10 @@ void checkCompass()
   // Read values from the WindSensor
   windPulseWidth = pulseIn(ROBOSAIL_PIN_WIND, HIGH);
   // Convert the wind angle to degrees from PWM.  Range -180 to +180
-  windAngle = map(windPulseWidth, ROBOSAIL_WIND_SENSOR_LOW, ROBOSAIL_WIND_SENSOR_HIGH, 180, -180);
-  windAngle = constrain(windAngle, -180, 180);
+  windAngle = -map(windPulseWidth,
+                   ROBOSAIL_WIND_SENSOR_LOW, ROBOSAIL_WIND_SENSOR_HIGH,
+                   ROBOSAIL_WIND_ANGLE_LOW, ROBOSAIL_WIND_ANGLE_HIGH);
+  windAngle = constrain(windAngle, ROBOSAIL_WIND_ANGLE_LOW, ROBOSAIL_WIND_ANGLE_HIGH);
  }
 
 void readAccel()   /* Read the Accelerometer event and put data in variables */
@@ -76,9 +82,11 @@ void readAccel()   /* Read the Accelerometer event and put data in variables */
 
 void driveSailServo(int sailPos)
 {
-  if ((sailPos >= 0) && (sailPos <= 90))  // the command in degrees is valid
+  if ((sailPos >= ROBOSAIL_SAIL_ANGLE_LOW) && (sailPos <= ROBOSAIL_SAIL_ANGLE_HIGH))  // the command in degrees is valid
   {
-    sailServoOut = map(sailPos, 0, 90, 55, 125);
+    sailServoOut = map(sailPos,
+                       ROBOSAIL_SAIL_ANGLE_LOW, ROBOSAIL_SAIL_ANGLE_HIGH,
+                       ROBOSAIL_SAIL_SERVO_LOW, ROBOSAIL_SAIL_SERVO_HIGH);
     sailServo.write(sailServoOut);
   }
   else
@@ -90,9 +98,11 @@ void driveSailServo(int sailPos)
 
 void driveRudderServo(int rudderPos)
 {
-  if ((rudderPos >= -60) && (rudderPos <= 60))
+  if ((rudderPos >= ROBOSAIL_RUDDER_ANGLE_LOW) && (rudderPos <= ROBOSAIL_RUDDER_ANGLE_HIGH))
   {
-    rudderServoOut = map(rudderPos, -90, 90, 0, 180);
+    rudderServoOut = map(rudderPos,
+                         ROBOSAIL_RUDDER_ANGLE_LOW, ROBOSAIL_RUDDER_ANGLE_HIGH,
+                         ROBOSAIL_RUDDER_SERVO_LOW, ROBOSAIL_RUDDER_SERVO_HIGH);
     rudderServo.write(rudderServoOut);
   }
   else

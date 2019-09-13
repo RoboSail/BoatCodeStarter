@@ -1,13 +1,13 @@
 // variables to hold input and output values
 int rudderPulseWidth;
+int rudderPosition = 0;
 int rudderServoOut;
 int sailPulseWidth;
+int sailPosition = 45;
 int sailServoOut;
 //variables for WindSensor
 int windAngle = 0;
 int windPulseWidth = 0;
-int rudderPosition = 0;
-int sailPosition = 45;
 
 //create servo objects
 Servo rudderServo;
@@ -38,4 +38,3 @@ float relPositionX = 0;
 float relPositionY = 0;
 float XYpos[2]; // this is xy position - it is in a 2 place array for x, y
 float angleFromStart = 0;
-

@@ -58,5 +58,3 @@ if (GPS.newNMEAreceived())
     }
   }
 }
-
-
