@@ -48,13 +48,13 @@ void loop() {
   rudderPulseWidth = pulseIn(ROBOSAIL_PIN_RUDDER_RC, HIGH, 25000);
   sailPulseWidth = pulseIn(ROBOSAIL_PIN_SAIL_RC, HIGH, 25000);
   // Calculate the servo position in degrees.
-  rudderServoOut = map(rudderPulseWidth, ROBOSAIL_RUDDER_LOW, ROBOSAIL_RUDDER_HIGH, -75, 75) + 90;
-  sailServoOut = map(sailPulseWidth, ROBOSAIL_SAIL_LOW, ROBOSAIL_SAIL_HIGH, 0, 90);
+  rudderServoOut = map(rudderPulseWidth, ROBOSAIL_RUDDER_RC_LOW, ROBOSAIL_RUDDER_RC_HIGH, -75, 75) + 90;
+  sailServoOut = map(sailPulseWidth, ROBOSAIL_SAIL_RC_LOW, ROBOSAIL_SAIL_RC_HIGH, 0, 90);
 
   // Read values from the WindSensor
   windPulseWidth = pulseIn(ROBOSAIL_PIN_WIND, HIGH, 25000);
   // Convert the wind angle to degrees from PWM.  Range -180 to +180
-  windAngle = map(windPulseWidth, ROBOSAIL_WIND_LOW, ROBOSAIL_WIND_HIGH, 180, -180);
+  windAngle = map(windPulseWidth, ROBOSAIL_WIND_SENSOR_LOW, ROBOSAIL_WIND_SENSOR_HIGH, 180, -180);
   windAngle = constrain(windAngle, -180, 180);
 
 //**************** your code here ******************
@@ -63,11 +63,11 @@ void loop() {
    //Serial.print("rudderServoOut");
     if(sailPulseWidth > 1800){
       automode = true;
-      sailServoOut = map(sailPulseWidth, ROBOSAIL_SAIL_LOW, ROBOSAIL_SAIL_HIGH, 0, 90);
+      sailServoOut = map(sailPulseWidth, ROBOSAIL_SAIL_RC_LOW, ROBOSAIL_SAIL_RC_HIGH, 0, 90);
         sailServoOut = abs(windAngle)/2;
     }
     else{
-        sailServoOut = map(sailPulseWidth, ROBOSAIL_SAIL_LOW, ROBOSAIL_SAIL_HIGH, 0, 90);
+        sailServoOut = map(sailPulseWidth, ROBOSAIL_SAIL_RC_LOW, ROBOSAIL_SAIL_RC_HIGH, 0, 90);
         automode = false;
     }
   if (verbose) {printToMonitor();}
@@ -117,7 +117,3 @@ Serial.print(" mode");
 
   Serial.print("\n"); // Print a new line
 }
-
-
-
-

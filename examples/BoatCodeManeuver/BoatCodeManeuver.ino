@@ -51,13 +51,13 @@ void loop() {
   rudderPulseWidth = pulseIn(ROBOSAIL_PIN_RUDDER_RC, HIGH);
   sailPulseWidth = pulseIn(ROBOSAIL_PIN_SAIL_RC, HIGH);
   // Calculate the servo position in degrees.
-  sailPosition = map(sailPulseWidth, ROBOSAIL_SAIL_LOW, ROBOSAIL_SAIL_HIGH, 0, 90);
-  rudderPosition = map(rudderPulseWidth, ROBOSAIL_RUDDER_LOW, ROBOSAIL_RUDDER_HIGH, -60, 60);
+  sailPosition = map(sailPulseWidth, ROBOSAIL_SAIL_RC_LOW, ROBOSAIL_SAIL_RC_HIGH, 0, 90);
+  rudderPosition = map(rudderPulseWidth, ROBOSAIL_RUDDER_RC_LOW, ROBOSAIL_RUDDER_RC_HIGH, -60, 60);
 
   // Read values from the WindSensor
   windPulseWidth = pulseIn(ROBOSAIL_PIN_WIND, HIGH);
   // Convert the wind angle to degrees from PWM.  Range -180 to +180
-  windAngle = map(windPulseWidth, ROBOSAIL_WIND_LOW, ROBOSAIL_WIND_HIGH, 180, -180);
+  windAngle = map(windPulseWidth, ROBOSAIL_WIND_SENSOR_LOW, ROBOSAIL_WIND_SENSOR_HIGH, 180, -180);
   windAngle = constrain(windAngle, -180, 180);
 
 //**************** your code here ******************

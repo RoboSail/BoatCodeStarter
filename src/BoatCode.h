@@ -10,12 +10,12 @@ future.
 Some possible candidates would be functions that do the following:
 
 rudderPulseWidth = pulseIn(ROBOSAIL_PIN_RUDDER_RC, HIGH, 25000);
-rudderServoOut = map(rudderPulseWidth, ROBOSAIL_RUDDER_LOW, ROBOSAIL_RUDDER_HIGH, -75, 75) + 90;
+rudderServoOut = map(rudderPulseWidth, ROBOSAIL_RUDDER_RC_LOW, ROBOSAIL_RUDDER_RC_HIGH, -75, 75) + 90;
 
 sailPulseWidth = pulseIn(ROBOSAIL_PIN_SAIL_RC, HIGH, 25000);
-sailServoOut = map(sailPulseWidth, ROBOSAIL_SAIL_LOW, ROBOSAIL_SAIL_HIGH, 0, 90);
+sailServoOut = map(sailPulseWidth, ROBOSAIL_SAIL_RC_LOW, ROBOSAIL_SAIL_RC_HIGH, 0, 90);
 
 windPulseWidth = pulseIn(ROBOSAIL_PIN_WIND, HIGH, 25000);
-windAngle = map(windPulseWidth, ROBOSAIL_WIND_LOW, ROBOSAIL_WIND_HIGH, 180, -180);
+windAngle = map(windPulseWidth, ROBOSAIL_WIND_SENSOR_LOW, ROBOSAIL_WIND_SENSOR_HIGH, 180, -180);
 
 */
