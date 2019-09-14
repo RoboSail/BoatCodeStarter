@@ -39,10 +39,11 @@ void declarePins()
  {
   // Read values from the WindSensor
   windPulseWidth = pulseIn(ROBOSAIL_PIN_WIND, HIGH);
-  // Convert the wind angle to degrees from PWM.  Range -180 to +180
-  windAngle = -map(windPulseWidth,
-                   ROBOSAIL_WIND_SENSOR_LOW, ROBOSAIL_WIND_SENSOR_HIGH,
-                   ROBOSAIL_WIND_ANGLE_LOW, ROBOSAIL_WIND_ANGLE_HIGH);
+  // Convert the wind angle to degrees from PWM values.  Range -180 to +180
+  // Note that the the low value of the angle corresponds to the high value of the sensor
+  windAngle = map(windPulseWidth,
+                  ROBOSAIL_WIND_SENSOR_LOW, ROBOSAIL_WIND_SENSOR_HIGH,
+                  ROBOSAIL_WIND_ANGLE_HIGH, ROBOSAIL_WIND_ANGLE_LOW);
   windAngle = constrain(windAngle, ROBOSAIL_WIND_ANGLE_LOW, ROBOSAIL_WIND_ANGLE_HIGH);
  }
 
