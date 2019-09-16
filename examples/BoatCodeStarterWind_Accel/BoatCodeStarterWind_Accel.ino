@@ -7,6 +7,7 @@ Find detailed description in Decription tab
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h>
+#include <RoboSail_Hardware.h>
 #include "RoboSail.h"
 //Fill in min/max parameters for the RC Receiver and WindSensor in RoboSail.h tab
 boolean displayValues = true;  //true calls function for values to be printed to monitor
@@ -14,11 +15,16 @@ boolean displayValues = true;  //true calls function for values to be printed to
 
 void setup() {
   Serial.begin(115200);
-  accel.begin();
-  Serial.println("\nRoboSail BoatCode using Wind and Accel - XXXXX");  //write program name here
+
+  // Print the boat's name (as defined in RoboSail_Hardware.h as an
+  // explicit check that the settings file is being included properly
+  Serial.print("This boat is "); Serial.println(ROBOSAIL_BOAT_NAME);
+  Serial.println(__FILE__);  // prints the name (path) of this sketch
+
   // Set RC receiver and WindSensor on digital input pins
   declarePins();
 
+  accel.begin();
 }
 
 void loop() {

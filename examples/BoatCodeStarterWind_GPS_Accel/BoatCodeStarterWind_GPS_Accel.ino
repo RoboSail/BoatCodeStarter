@@ -18,14 +18,17 @@ Adafruit_GPS GPS(ROBOSAIL_SERIALPORT_GPS);
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("\nRoboSail BoatCode Wind+GPS+Accel 7/31/16");  //write program name/rev here
-  accel.begin();
+
+  // Print the boat's name (as defined in RoboSail_Hardware.h as an
+  // explicit check that the settings file is being included properly
+  Serial.print("This boat is "); Serial.println(ROBOSAIL_BOAT_NAME);
+  Serial.println(__FILE__);  // prints the name (path) of this sketch
 
   // Set RC receiver and all Sensors on digital input pins
   declarePins();
 
+  accel.begin();
   checkGPS();
-
   checkCompass(); // will check Accelerometer
 }
 
@@ -56,6 +59,3 @@ void loop() {
   if (displayValues) {printToMonitor();}
 
 } //end of loop()
-
-
-

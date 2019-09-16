@@ -3,6 +3,7 @@
 Find detailed description in Decription tab
 */
 #include <Servo.h>
+#include <RoboSail_Hardware.h>
 #include "RoboSail.h"
 boolean displayValues = true;  //true calls function for values to be printed to monitor
 
@@ -10,7 +11,12 @@ boolean displayValues = true;  //true calls function for values to be printed to
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("\nRoboSail BoatCode - XXXXX");  //write program name here
+
+  // Print the boat's name (as defined in RoboSail_Hardware.h as an
+  // explicit check that the settings file is being included properly
+  Serial.print("This boat is "); Serial.println(ROBOSAIL_BOAT_NAME);
+  Serial.println(__FILE__);  // prints the name (path) of this sketch
+
   // Set RC receiver and WindSensor on digital input pins
   declarePins();
 }
@@ -20,9 +26,9 @@ void loop() {
 readReceiver();
 readWind();
 
-// You now have values from the RC Receiver and Sensors in these variable: 
+// You now have values from the RC Receiver and Sensors in these variable:
 // rudderPosition, sailPosition, and windAngle
-// Calculate new values for rudderPosition and sailPosition in degrees 
+// Calculate new values for rudderPosition and sailPosition in degrees
 // and set those variables to the new values.
 // If you do not set the values, it will use the values from the RC Receiver
 // For example, to make the rudder follow the wind angle you would have:
@@ -30,13 +36,11 @@ readWind();
 //**************** your code here ******************
 
 
-  
+
 /********************* send commands to motors *************************/
   driveSailServo(sailPosition);
   driveRudderServo(rudderPosition);
-  
+
   if (displayValues) {printToMonitor();}
-  
+
 } //end of loop()
-
-
