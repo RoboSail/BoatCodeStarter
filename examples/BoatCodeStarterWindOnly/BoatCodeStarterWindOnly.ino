@@ -9,13 +9,15 @@ Find detailed description in Decription tab
 
 boolean displayValues = true;  //true calls function for values to be printed to monitor
 
-void setup() {
+void setup() 
+{
   Serial.begin(115200);
   Serial.println("\nRoboSail BoatCode using WindSensor only - XXXXX");  //write program name here
   declarePins();    // Set RC receiver and WindSensor on digital input pins
 }
 
-void loop() {
+void loop() 
+{
 //*********** Read in data from the RC receiver and sensors *********
 readReceiver();
 readWind();
